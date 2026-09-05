@@ -115,20 +115,17 @@ struct CardView: View {
     }
 
     private func faceCardEmblem(color: Color, size: CGSize) -> some View {
-        VStack(spacing: 4) {
-            Image(systemName: "crown.fill")
-                .font(.system(size: size.width * 0.18))
-            Text(card.rank.label)
-                .font(.system(size: size.width * 0.4, weight: .heavy, design: .serif))
-            Image(systemName: suitSymbolName)
-                .font(.system(size: size.width * 0.18))
-        }
-        .foregroundStyle(color)
-        .overlay(
-            RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(color.opacity(0.35), lineWidth: 1.5)
-                .padding(size.width * 0.12)
-        )
+        // Small cards leave no room for a crown + letter + suit stacked on top of
+        // each other without the pieces crowding into one another — just the big
+        // letter reads cleanly at any size, and the corner index already shows the suit.
+        Text(card.rank.label)
+            .font(.system(size: size.width * 0.46, weight: .heavy, design: .serif))
+            .foregroundStyle(color)
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(color.opacity(0.3), lineWidth: 1.5)
+                    .padding(size.width * 0.16)
+            )
     }
 
     private var backContent: some View {

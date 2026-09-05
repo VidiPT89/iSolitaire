@@ -51,29 +51,30 @@ struct WasteView: View {
                     .contentShape(Rectangle())
                     .offset(dragOffset)
                     .zIndex(draggingCardID == top.id ? 1000 : 0)
-                    .highPriorityGesture(
-                        TapGesture(count: 2).onEnded {
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                                _ = game.tryAutoMoveToFoundation(cardID: top.id, from: .waste)
-                            }
-                        }
-                    )
                     .gesture(
-                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
-                            .onChanged { value in
-                                draggingCardID = top.id
-                                dragOffset = value.translation
-                            }
-                            .onEnded { value in
-                                let destination = destinationPile(at: value.location, in: pileFrames, excluding: .waste)
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                                    if let destination {
-                                        _ = game.tryMove(cardID: top.id, from: .waste, to: destination)
-                                    }
-                                    dragOffset = .zero
+                        TapGesture(count: 2)
+                            .onEnded {
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                    _ = game.tryAutoMoveToFoundation(cardID: top.id, from: .waste)
                                 }
-                                draggingCardID = nil
                             }
+                            .exclusively(
+                                before: DragGesture(minimumDistance: 10, coordinateSpace: .named("board"))
+                                    .onChanged { value in
+                                        draggingCardID = top.id
+                                        dragOffset = value.translation
+                                    }
+                                    .onEnded { value in
+                                        let destination = destinationPile(at: value.location, in: pileFrames, excluding: .waste)
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                            if let destination {
+                                                _ = game.tryMove(cardID: top.id, from: .waste, to: destination)
+                                            }
+                                            dragOffset = .zero
+                                        }
+                                        draggingCardID = nil
+                                    }
+                            )
                     )
             }
         }
@@ -105,7 +106,7 @@ struct FoundationView: View {
                     .offset(dragOffset)
                     .zIndex(draggingCardID == top.id ? 1000 : 0)
                     .gesture(
-                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
+                        DragGesture(minimumDistance: 10, coordinateSpace: .named("board"))
                             .onChanged { value in
                                 draggingCardID = top.id
                                 dragOffset = value.translation
@@ -156,34 +157,36 @@ struct TableauColumnView: View {
                     .offset(y: CGFloat(index) * metrics.overlap)
                     .offset(isBeingDragged ? dragOffset : .zero)
                     .zIndex(isBeingDragged ? 1000 + Double(index) : Double(index))
-                    .highPriorityGesture(
-                        TapGesture(count: 2).onEnded {
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                                _ = game.tryAutoMoveToFoundation(cardID: card.id, from: .tableau(column))
-                            }
-                        }
-                    )
                     .gesture(
-                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
-                            .onChanged { value in
+                        TapGesture(count: 2)
+                            .onEnded {
                                 guard card.isFaceUp else { return }
-                                dragStartIndex = index
-                                draggingCardID = card.id
-                                dragOffset = value.translation
-                            }
-                            .onEnded { value in
-                                guard card.isFaceUp else { return }
-                                let source = PileKind.tableau(column)
-                                let destination = destinationPile(at: value.location, in: pileFrames, excluding: source)
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                                    if let destination {
-                                        _ = game.tryMove(cardID: card.id, from: source, to: destination)
-                                    }
-                                    dragOffset = .zero
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                    _ = game.tryAutoMoveToFoundation(cardID: card.id, from: .tableau(column))
                                 }
-                                dragStartIndex = nil
-                                draggingCardID = nil
                             }
+                            .exclusively(
+                                before: DragGesture(minimumDistance: 10, coordinateSpace: .named("board"))
+                                    .onChanged { value in
+                                        guard card.isFaceUp else { return }
+                                        dragStartIndex = index
+                                        draggingCardID = card.id
+                                        dragOffset = value.translation
+                                    }
+                                    .onEnded { value in
+                                        guard card.isFaceUp else { return }
+                                        let source = PileKind.tableau(column)
+                                        let destination = destinationPile(at: value.location, in: pileFrames, excluding: source)
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                            if let destination {
+                                                _ = game.tryMove(cardID: card.id, from: source, to: destination)
+                                            }
+                                            dragOffset = .zero
+                                        }
+                                        dragStartIndex = nil
+                                        draggingCardID = nil
+                                    }
+                            )
                     )
             }
         }
