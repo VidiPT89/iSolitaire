@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject var game: GameModel
+    @Binding var gameSettings: GameSettings
     @EnvironmentObject var appSettings: AppSettingsStore
     @Environment(\.dismiss) private var dismiss
 
@@ -35,7 +35,7 @@ struct SettingsView: View {
                 }
 
                 Section(L10n.t(.drawMode, lang)) {
-                    Picker(L10n.t(.drawMode, lang), selection: $game.settings.drawMode) {
+                    Picker(L10n.t(.drawMode, lang), selection: $gameSettings.drawMode) {
                         Text(L10n.t(.drawOne, lang)).tag(DrawMode.drawOne)
                         Text(L10n.t(.drawThree, lang)).tag(DrawMode.drawThree)
                     }
@@ -43,7 +43,7 @@ struct SettingsView: View {
                 }
 
                 Section(L10n.t(.recycles, lang)) {
-                    Picker(L10n.t(.recycles, lang), selection: $game.settings.recycleMode) {
+                    Picker(L10n.t(.recycles, lang), selection: $gameSettings.recycleMode) {
                         Text(L10n.t(.unlimited, lang)).tag(RecycleMode.unlimited)
                         Text(L10n.t(.limited, lang)).tag(RecycleMode.limited)
                     }

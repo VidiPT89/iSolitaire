@@ -21,14 +21,15 @@ final class GameModel: ObservableObject {
     private let statsStore = StatsStore()
     private let impactFeedback = HapticsPlayer()
 
-    init(settings: GameSettings? = nil) {
+    init(settings: GameSettings? = nil, startFresh: Bool = false) {
         self.settings = settings ?? GameStateStore.loadSettings() ?? GameSettings()
-        if let saved = GameStateStore.loadState(), !saved.isWon {
+        let saved = GameStateStore.loadState().flatMap { $0.isWon ? nil : $0 }
+        if !startFresh, let saved {
             self.state = saved
             evaluateAutoComplete()
             startTimer()
         } else {
-            self.state = GameState()
+            self.state = saved ?? GameState()
             newGame()
         }
     }

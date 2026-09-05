@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SplashView: View {
     @EnvironmentObject var appSettings: AppSettingsStore
-    @State private var showBoard = false
+    @State private var showMenu = false
     @State private var logoScale: CGFloat = 0.7
     @State private var logoOpacity: Double = 0
     @State private var creditsOpacity: Double = 0
@@ -11,15 +11,15 @@ struct SplashView: View {
 
     var body: some View {
         ZStack {
-            if showBoard {
-                BoardView()
+            if showMenu {
+                MenuView()
                     .transition(.opacity.combined(with: .scale(scale: 1.03)))
             } else {
                 splash
                     .transition(.opacity)
             }
         }
-        .animation(.easeInOut(duration: 0.5), value: showBoard)
+        .animation(.easeInOut(duration: 0.5), value: showMenu)
     }
 
     private var splash: some View {
@@ -65,7 +65,7 @@ struct SplashView: View {
                 creditsOpacity = 1
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
-                withAnimation { showBoard = true }
+                withAnimation { showMenu = true }
             }
         }
     }

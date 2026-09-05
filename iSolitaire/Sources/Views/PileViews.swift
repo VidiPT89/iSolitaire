@@ -23,6 +23,7 @@ struct StockView: View {
                 CardView(card: Card(suit: .spades, rank: .ace, isFaceUp: false), width: metrics.width, height: metrics.height)
             }
         }
+        .frame(width: metrics.width, height: metrics.height)
         .contentShape(Rectangle())
         .onTapGesture {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
@@ -42,16 +43,20 @@ struct WasteView: View {
                 .frame(width: metrics.width, height: metrics.height)
             if let top = game.state.waste.last {
                 CardView(card: top, isHinted: game.hintedCardID == top.id, width: metrics.width, height: metrics.height)
+                    .contentShape(Rectangle())
                     .onDrag {
                         NSItemProvider(object: "\(top.id.uuidString)|\(PileKind.waste.encoded)" as NSString)
                     }
-                    .onTapGesture(count: 2) {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                            _ = game.tryAutoMoveToFoundation(cardID: top.id, from: .waste)
+                    .highPriorityGesture(
+                        TapGesture(count: 2).onEnded {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                _ = game.tryAutoMoveToFoundation(cardID: top.id, from: .waste)
+                            }
                         }
-                    }
+                    )
             }
         }
+        .frame(width: metrics.width, height: metrics.height)
     }
 }
 
@@ -72,6 +77,8 @@ struct FoundationView: View {
                     .onDrag { NSItemProvider(object: "\(top.id.uuidString)|\(PileKind.foundation(suit).encoded)" as NSString) }
             }
         }
+        .frame(width: metrics.width, height: metrics.height)
+        .contentShape(Rectangle())
         .onDrop(of: [.plainText], delegate: CardDropDelegate(destination: .foundation(suit), game: game))
     }
 }
@@ -90,6 +97,7 @@ struct TableauColumnView: View {
 
             ForEach(Array(pile.enumerated()), id: \.element.id) { index, card in
                 CardView(card: card, isHinted: game.hintedCardID == card.id, width: metrics.width, height: metrics.height)
+                    .contentShape(Rectangle())
                     .offset(y: CGFloat(index) * metrics.overlap)
                     .zIndex(Double(index))
                     .onDrag {
@@ -97,14 +105,17 @@ struct TableauColumnView: View {
                         ? NSItemProvider(object: "\(card.id.uuidString)|\(PileKind.tableau(column).encoded)" as NSString)
                         : NSItemProvider()
                     }
-                    .onTapGesture(count: 2) {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                            _ = game.tryAutoMoveToFoundation(cardID: card.id, from: .tableau(column))
+                    .highPriorityGesture(
+                        TapGesture(count: 2).onEnded {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                _ = game.tryAutoMoveToFoundation(cardID: card.id, from: .tableau(column))
+                            }
                         }
-                    }
+                    )
             }
         }
         .frame(width: metrics.width, height: metrics.height + CGFloat(max(pile.count - 1, 0)) * metrics.overlap, alignment: .top)
+        .contentShape(Rectangle())
         .onDrop(of: [.plainText], delegate: CardDropDelegate(destination: .tableau(column), game: game))
     }
 }

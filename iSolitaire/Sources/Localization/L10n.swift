@@ -3,6 +3,7 @@ import Foundation
 enum L10nKey: String {
     case appName
     case newGame
+    case continueGame
     case undo
     case hint
     case autoComplete
@@ -42,6 +43,7 @@ enum L10n {
         .portuguese: [
             .appName: "iSolitaire",
             .newGame: "Novo Jogo",
+            .continueGame: "Continuar",
             .undo: "Anular",
             .hint: "Dica",
             .autoComplete: "Terminar Automaticamente",

@@ -21,6 +21,7 @@
 		562BDA4451F140FA9547F201 /* StatsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */; };
 		5F2E4DB8251CB6F6D190398A /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B723C2F42FABDC57ED284 /* SplashView.swift */; };
 		72EF37A8F497929F3748018B /* CardDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7277870FB8BC0C894BCD91 /* CardDropDelegate.swift */; };
+		9D764937DF1B770D1A391F97 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEA689D7CFC1E9FAC782B1F /* MenuView.swift */; };
 		A6D87DFC2C023CF25AC01ECD /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC7247814377633BF484E25 /* StatsView.swift */; };
 		A782D081D995F81F1D0EA3B9 /* WinOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47B2409048ADBB0038E7CE7 /* WinOverlay.swift */; };
 		D3D7CD73AE9C6E339903CC04 /* GameStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3D7A0EDE68D99C635AC26 /* GameStateStore.swift */; };
@@ -35,6 +36,7 @@
 		23F78F37063EBB2786373493 /* HapticsPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsPlayer.swift; sourceTree = "<group>"; };
 		2C84F7053F4D69BD5B4C963C /* DrawMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawMode.swift; sourceTree = "<group>"; };
 		33F5B65CD80A56C28429A7A8 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
+		3BEA689D7CFC1E9FAC782B1F /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		65C1A8DF936C4077AD10E541 /* PileViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PileViews.swift; sourceTree = "<group>"; };
 		79E4D24B4015DFA2D284324D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				D97328EA4FE70F2E0625E4AA /* BoardView.swift */,
 				8E7277870FB8BC0C894BCD91 /* CardDropDelegate.swift */,
 				B9B09FC8560CA4AEEA98F53E /* CardView.swift */,
+				3BEA689D7CFC1E9FAC782B1F /* MenuView.swift */,
 				65C1A8DF936C4077AD10E541 /* PileViews.swift */,
 				3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */,
 				977B723C2F42FABDC57ED284 /* SplashView.swift */,
@@ -225,6 +228,7 @@
 				D3D7CD73AE9C6E339903CC04 /* GameStateStore.swift in Sources */,
 				489B37EE713EDA58B95A7214 /* HapticsPlayer.swift in Sources */,
 				43AA9B2BD5230F7264957B69 /* L10n.swift in Sources */,
+				9D764937DF1B770D1A391F97 /* MenuView.swift in Sources */,
 				37701F2F15A6D34499F6C183 /* PileViews.swift in Sources */,
 				DDF9C9EFBC449B9AE7BAB149 /* SettingsView.swift in Sources */,
 				5F2E4DB8251CB6F6D190398A /* SplashView.swift in Sources */,

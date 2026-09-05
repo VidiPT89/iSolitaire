@@ -1,12 +1,17 @@
 import SwiftUI
 
 struct BoardView: View {
-    @StateObject private var game = GameModel()
+    @StateObject private var game: GameModel
     @EnvironmentObject var appSettings: AppSettingsStore
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
     @State private var showSettings = false
     @State private var showStats = false
     @State private var showWin = false
+
+    init(startFresh: Bool = false) {
+        _game = StateObject(wrappedValue: GameModel(startFresh: startFresh))
+    }
 
     private var lang: AppLanguage { appSettings.language }
     private var textColor: Color { Theme.primaryText(for: colorScheme) }
@@ -58,7 +63,7 @@ struct BoardView: View {
             if newValue > 0 { showWin = true }
         }
         .sheet(isPresented: $showSettings) {
-            SettingsView(game: game).environmentObject(appSettings)
+            SettingsView(gameSettings: $game.settings).environmentObject(appSettings)
         }
         .sheet(isPresented: $showStats) {
             StatsView().environmentObject(appSettings)
@@ -72,6 +77,9 @@ struct BoardView: View {
 
     private var header: some View {
         HStack {
+            Button { dismiss() } label: {
+                Image(systemName: "chevron.left")
+            }
             statPill(L10n.t(.score, lang), "\(game.state.score)")
             statPill(L10n.t(.moves, lang), "\(game.state.moves)")
             statPill(L10n.t(.time, lang), timeString(game.state.elapsedSeconds))
