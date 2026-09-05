@@ -1,5 +1,4 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Card proportions shared by every pile so the board scales to fit any screen width.
 struct CardMetrics {
@@ -36,6 +35,10 @@ struct StockView: View {
 struct WasteView: View {
     @ObservedObject var game: GameModel
     let metrics: CardMetrics
+    let pileFrames: [PileKind: CGRect]
+    @Binding var draggingCardID: UUID?
+    @State private var dragOffset: CGSize = .zero
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
@@ -44,15 +47,31 @@ struct WasteView: View {
             if let top = game.state.waste.last {
                 CardView(card: top, isHinted: game.hintedCardID == top.id, width: metrics.width, height: metrics.height)
                     .contentShape(Rectangle())
-                    .onDrag {
-                        NSItemProvider(object: "\(top.id.uuidString)|\(PileKind.waste.encoded)" as NSString)
-                    }
+                    .offset(dragOffset)
+                    .zIndex(draggingCardID == top.id ? 1000 : 0)
                     .highPriorityGesture(
                         TapGesture(count: 2).onEnded {
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                                 _ = game.tryAutoMoveToFoundation(cardID: top.id, from: .waste)
                             }
                         }
+                    )
+                    .gesture(
+                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
+                            .onChanged { value in
+                                draggingCardID = top.id
+                                dragOffset = value.translation
+                            }
+                            .onEnded { value in
+                                let destination = destinationPile(at: value.location, in: pileFrames, excluding: .waste)
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    if let destination {
+                                        _ = game.tryMove(cardID: top.id, from: .waste, to: destination)
+                                    }
+                                    dragOffset = .zero
+                                }
+                                draggingCardID = nil
+                            }
                     )
             }
         }
@@ -64,6 +83,10 @@ struct FoundationView: View {
     @ObservedObject var game: GameModel
     let suit: Suit
     let metrics: CardMetrics
+    let pileFrames: [PileKind: CGRect]
+    @Binding var draggingCardID: UUID?
+    @State private var dragOffset: CGSize = .zero
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
@@ -74,12 +97,32 @@ struct FoundationView: View {
                 .foregroundStyle(Theme.scorched.opacity(0.4))
             if let top = game.state.foundations[suit]?.last {
                 CardView(card: top, width: metrics.width, height: metrics.height)
-                    .onDrag { NSItemProvider(object: "\(top.id.uuidString)|\(PileKind.foundation(suit).encoded)" as NSString) }
+                    .contentShape(Rectangle())
+                    .offset(dragOffset)
+                    .zIndex(draggingCardID == top.id ? 1000 : 0)
+                    .gesture(
+                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
+                            .onChanged { value in
+                                draggingCardID = top.id
+                                dragOffset = value.translation
+                            }
+                            .onEnded { value in
+                                let source = PileKind.foundation(suit)
+                                let destination = destinationPile(at: value.location, in: pileFrames, excluding: source)
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    if let destination {
+                                        _ = game.tryMove(cardID: top.id, from: source, to: destination)
+                                    }
+                                    dragOffset = .zero
+                                }
+                                draggingCardID = nil
+                            }
+                    )
             }
         }
         .frame(width: metrics.width, height: metrics.height)
         .contentShape(Rectangle())
-        .onDrop(of: [.plainText], delegate: CardDropDelegate(destination: .foundation(suit), game: game))
+        .reportPileFrame(.foundation(suit))
     }
 }
 
@@ -87,6 +130,11 @@ struct TableauColumnView: View {
     @ObservedObject var game: GameModel
     let column: Int
     let metrics: CardMetrics
+    let pileFrames: [PileKind: CGRect]
+    @Binding var draggingCardID: UUID?
+
+    @State private var dragStartIndex: Int?
+    @State private var dragOffset: CGSize = .zero
 
     var body: some View {
         let pile = game.state.tableau[column]
@@ -96,15 +144,12 @@ struct TableauColumnView: View {
                 .frame(width: metrics.width, height: metrics.height)
 
             ForEach(Array(pile.enumerated()), id: \.element.id) { index, card in
+                let isBeingDragged = card.isFaceUp && dragStartIndex.map { index >= $0 } ?? false
                 CardView(card: card, isHinted: game.hintedCardID == card.id, width: metrics.width, height: metrics.height)
                     .contentShape(Rectangle())
                     .offset(y: CGFloat(index) * metrics.overlap)
-                    .zIndex(Double(index))
-                    .onDrag {
-                        card.isFaceUp
-                        ? NSItemProvider(object: "\(card.id.uuidString)|\(PileKind.tableau(column).encoded)" as NSString)
-                        : NSItemProvider()
-                    }
+                    .offset(isBeingDragged ? dragOffset : .zero)
+                    .zIndex(isBeingDragged ? 1000 + Double(index) : Double(index))
                     .highPriorityGesture(
                         TapGesture(count: 2).onEnded {
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
@@ -112,10 +157,32 @@ struct TableauColumnView: View {
                             }
                         }
                     )
+                    .gesture(
+                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
+                            .onChanged { value in
+                                guard card.isFaceUp else { return }
+                                dragStartIndex = index
+                                draggingCardID = card.id
+                                dragOffset = value.translation
+                            }
+                            .onEnded { value in
+                                guard card.isFaceUp else { return }
+                                let source = PileKind.tableau(column)
+                                let destination = destinationPile(at: value.location, in: pileFrames, excluding: source)
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    if let destination {
+                                        _ = game.tryMove(cardID: card.id, from: source, to: destination)
+                                    }
+                                    dragOffset = .zero
+                                }
+                                dragStartIndex = nil
+                                draggingCardID = nil
+                            }
+                    )
             }
         }
         .frame(width: metrics.width, height: metrics.height + CGFloat(max(pile.count - 1, 0)) * metrics.overlap, alignment: .top)
         .contentShape(Rectangle())
-        .onDrop(of: [.plainText], delegate: CardDropDelegate(destination: .tableau(column), game: game))
+        .reportPileFrame(.tableau(column))
     }
 }

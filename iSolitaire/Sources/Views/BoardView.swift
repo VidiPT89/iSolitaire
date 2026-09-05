@@ -8,6 +8,8 @@ struct BoardView: View {
     @State private var showSettings = false
     @State private var showStats = false
     @State private var showWin = false
+    @State private var pileFrames: [PileKind: CGRect] = [:]
+    @State private var draggingCardID: UUID?
 
     init(startFresh: Bool = false) {
         _game = StateObject(wrappedValue: GameModel(startFresh: startFresh))
@@ -37,17 +39,17 @@ struct BoardView: View {
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         StockView(game: game, metrics: metrics)
-                        WasteView(game: game, metrics: metrics)
+                        WasteView(game: game, metrics: metrics, pileFrames: pileFrames, draggingCardID: $draggingCardID)
                         Spacer(minLength: columnSpacing)
                         ForEach(Suit.allCases, id: \.self) { suit in
-                            FoundationView(game: game, suit: suit, metrics: metrics)
+                            FoundationView(game: game, suit: suit, metrics: metrics, pileFrames: pileFrames, draggingCardID: $draggingCardID)
                         }
                     }
                     .padding(.horizontal, horizontalPadding)
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         ForEach(0..<7, id: \.self) { column in
-                            TableauColumnView(game: game, column: column, metrics: metrics)
+                            TableauColumnView(game: game, column: column, metrics: metrics, pileFrames: pileFrames, draggingCardID: $draggingCardID)
                         }
                     }
                     .padding(.horizontal, horizontalPadding)
@@ -58,6 +60,8 @@ struct BoardView: View {
                 }
                 .padding(.top)
             }
+            .coordinateSpace(name: "board")
+            .onPreferenceChange(PileFramePreferenceKey.self) { pileFrames = $0 }
         }
         .onChange(of: game.wonAnimationTrigger) { _, newValue in
             if newValue > 0 { showWin = true }
