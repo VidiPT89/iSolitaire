@@ -46,7 +46,7 @@ struct WasteView: View {
                 .strokeBorder(Color.primary.opacity(0.15), lineWidth: 1)
                 .frame(width: metrics.width, height: metrics.height)
             if let top = game.state.waste.last {
-                CardView(card: top, isHinted: game.hintedCardID == top.id, width: metrics.width, height: metrics.height)
+                CardView(card: top, isHinted: game.hintedCardID == top.id, isDragging: draggingCardID == top.id, width: metrics.width, height: metrics.height)
                     .matchedGeometryEffect(id: top.id, in: namespace)
                     .contentShape(Rectangle())
                     .offset(dragOffset)
@@ -99,7 +99,7 @@ struct FoundationView: View {
                 .font(.system(size: metrics.width * 0.4))
                 .foregroundStyle(Theme.scorched.opacity(0.4))
             if let top = game.state.foundations[suit]?.last {
-                CardView(card: top, width: metrics.width, height: metrics.height)
+                CardView(card: top, isDragging: draggingCardID == top.id, width: metrics.width, height: metrics.height)
                     .matchedGeometryEffect(id: top.id, in: namespace)
                     .contentShape(Rectangle())
                     .offset(dragOffset)
@@ -150,7 +150,7 @@ struct TableauColumnView: View {
 
             ForEach(Array(pile.enumerated()), id: \.element.id) { index, card in
                 let isBeingDragged = card.isFaceUp && dragStartIndex.map { index >= $0 } ?? false
-                CardView(card: card, isHinted: game.hintedCardID == card.id, width: metrics.width, height: metrics.height)
+                CardView(card: card, isHinted: game.hintedCardID == card.id, isDragging: isBeingDragged && draggingCardID == card.id, width: metrics.width, height: metrics.height)
                     .matchedGeometryEffect(id: card.id, in: namespace)
                     .contentShape(Rectangle())
                     .offset(y: CGFloat(index) * metrics.overlap)

@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -20,6 +21,7 @@ final class GameModel: ObservableObject {
     private var timer: Timer?
     private let statsStore = StatsStore()
     private let impactFeedback = HapticsPlayer()
+    private let soundPlayer = SoundPlayer()
 
     init(settings: GameSettings? = nil, startFresh: Bool = false) {
         self.settings = settings ?? GameStateStore.loadSettings() ?? GameSettings()
@@ -120,6 +122,7 @@ final class GameModel: ObservableObject {
         state.moves += 1
         hintedCardID = nil
         impactFeedback.cardDrawn()
+        soundPlayer.cardFlip()
         evaluateAutoComplete()
     }
 
@@ -161,6 +164,7 @@ final class GameModel: ObservableObject {
         state.score += scoreDelta(from: source, to: destination)
         hintedCardID = nil
         impactFeedback.moveSucceeded()
+        soundPlayer.cardPlace()
         checkWin()
         evaluateAutoComplete()
         return true
@@ -291,24 +295,40 @@ final class GameModel: ObservableObject {
     func autoComplete() {
         guard lastAutoCompleteAvailable else { return }
         pushUndo()
-        var progressed = true
-        while progressed {
-            progressed = false
+        Task { @MainActor [weak self] in
+            await self?.runAutoCompleteCascade()
+        }
+    }
+
+    /// Moves one card to its foundation at a time, with a short pause between each,
+    /// so the finish reads as a cascade rather than an instant jump.
+    private func runAutoCompleteCascade() async {
+        while true {
+            var moved = false
             if let top = state.waste.last, canPlace(top, onFoundation: top.suit) {
-                let card = state.waste.removeLast()
-                state.foundations[card.suit, default: []].append(card)
-                state.score += 10
-                progressed = true
-                continue
-            }
-            for column in state.tableau.indices {
-                if let top = state.tableau[column].last, top.isFaceUp, canPlace(top, onFoundation: top.suit) {
-                    state.tableau[column].removeLast()
-                    state.foundations[top.suit, default: []].append(top)
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                    let card = state.waste.removeLast()
+                    state.foundations[card.suit, default: []].append(card)
                     state.score += 10
-                    progressed = true
+                }
+                moved = true
+            } else {
+                for column in state.tableau.indices {
+                    if let top = state.tableau[column].last, top.isFaceUp, canPlace(top, onFoundation: top.suit) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            state.tableau[column].removeLast()
+                            state.foundations[top.suit, default: []].append(top)
+                            state.score += 10
+                        }
+                        moved = true
+                        break
+                    }
                 }
             }
+            guard moved else { break }
+            impactFeedback.moveSucceeded()
+            soundPlayer.cardPlace()
+            try? await Task.sleep(nanoseconds: 90_000_000)
         }
         checkWin()
     }
@@ -320,6 +340,7 @@ final class GameModel: ObservableObject {
         stopTimer()
         wonAnimationTrigger += 1
         impactFeedback.gameWon()
+        soundPlayer.win()
         statsStore.recordWin(time: state.elapsedSeconds, moves: state.moves, score: state.score)
         GameStateStore.clearState()
     }

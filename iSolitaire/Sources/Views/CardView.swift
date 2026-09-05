@@ -3,10 +3,12 @@ import SwiftUI
 struct CardView: View {
     let card: Card
     var isHinted: Bool = false
+    var isDragging: Bool = false
     var width: CGFloat = 64
     var height: CGFloat = 90
 
     @State private var flipAngle: Double = 0
+    @State private var hintPulse = false
 
     var body: some View {
         ZStack {
@@ -14,13 +16,21 @@ struct CardView: View {
                 .rotation3DEffect(.degrees(flipAngle >= 90 ? 180 : 0), axis: (x: 0, y: 1, z: 0))
         }
         .frame(width: width, height: height)
-        .scaleEffect(isHinted ? 1.07 : 1.0)
+        .scaleEffect(isDragging ? 1.08 : (isHinted && hintPulse ? 1.06 : 1.0))
+        .shadow(color: .black.opacity(isDragging ? 0.45 : 0), radius: isDragging ? 10 : 0, x: 0, y: isDragging ? 6 : 0)
         .rotation3DEffect(.degrees(flipAngle), axis: (x: 0, y: 1, z: 0))
         .onAppear { flipAngle = card.isFaceUp ? 180 : 0 }
         .onChange(of: card.isFaceUp) { _, newValue in
             withAnimation(.easeInOut(duration: 0.35)) { flipAngle = newValue ? 180 : 0 }
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isHinted)
+        .onChange(of: isHinted) { _, newValue in
+            if newValue {
+                withAnimation(.easeInOut(duration: 0.55).repeatForever(autoreverses: true)) { hintPulse = true }
+            } else {
+                hintPulse = false
+            }
+        }
+        .animation(.spring(response: 0.25, dampingFraction: 0.65), value: isDragging)
     }
 
     @ViewBuilder
