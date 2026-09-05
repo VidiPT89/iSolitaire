@@ -1,10 +1,17 @@
 import Foundation
 import Combine
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @MainActor
 final class GameModel: ObservableObject {
-    @Published private(set) var state: GameState
-    @Published var settings: GameSettings
+    @Published private(set) var state: GameState {
+        didSet { GameStateStore.saveState(state) }
+    }
+    @Published var settings: GameSettings {
+        didSet { GameStateStore.saveSettings(settings) }
+    }
     @Published var hintedCardID: UUID?
     @Published var lastAutoCompleteAvailable: Bool = false
     @Published var wonAnimationTrigger: Int = 0
@@ -12,16 +19,24 @@ final class GameModel: ObservableObject {
     private var undoStack: [GameState] = []
     private var timer: Timer?
     private let statsStore = StatsStore()
+    private let impactFeedback = HapticsPlayer()
 
-    init(settings: GameSettings = GameSettings()) {
-        self.settings = settings
-        self.state = GameState()
-        newGame()
+    init(settings: GameSettings? = nil) {
+        self.settings = settings ?? GameStateStore.loadSettings() ?? GameSettings()
+        if let saved = GameStateStore.loadState(), !saved.isWon {
+            self.state = saved
+            evaluateAutoComplete()
+            startTimer()
+        } else {
+            self.state = GameState()
+            newGame()
+        }
     }
 
     // MARK: - Setup
 
     func newGame() {
+        recordAbandonIfInProgress()
         stopTimer()
         var deck = Card.standardDeck().shuffled()
         var tableau: [[Card]] = Array(repeating: [], count: 7)
@@ -103,6 +118,7 @@ final class GameModel: ObservableObject {
         }
         state.moves += 1
         hintedCardID = nil
+        impactFeedback.cardDrawn()
         evaluateAutoComplete()
     }
 
@@ -143,6 +159,7 @@ final class GameModel: ObservableObject {
         state.moves += 1
         state.score += scoreDelta(from: source, to: destination)
         hintedCardID = nil
+        impactFeedback.moveSucceeded()
         checkWin()
         evaluateAutoComplete()
         return true
@@ -301,11 +318,13 @@ final class GameModel: ObservableObject {
         guard state.isWon else { return }
         stopTimer()
         wonAnimationTrigger += 1
+        impactFeedback.gameWon()
         statsStore.recordWin(time: state.elapsedSeconds, moves: state.moves, score: state.score)
+        GameStateStore.clearState()
     }
 
-    func recordLossIfAbandoned() {
-        guard !state.isWon else { return }
+    private func recordAbandonIfInProgress() {
+        guard state.moves > 0, !state.isWon else { return }
         statsStore.recordAbandon()
     }
 }

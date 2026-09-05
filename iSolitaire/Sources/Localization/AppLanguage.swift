@@ -36,11 +36,11 @@ final class AppSettingsStore: ObservableObject {
 
     var language: AppLanguage {
         get { AppLanguage(rawValue: languageRaw) ?? .english }
-        set { languageRaw = newValue.rawValue; objectWillChange.send() }
+        set { languageRaw = newValue.rawValue }
     }
 
     var colorScheme: AppColorScheme {
         get { AppColorScheme(rawValue: colorSchemeRaw) ?? .system }
-        set { colorSchemeRaw = newValue.rawValue; objectWillChange.send() }
+        set { colorSchemeRaw = newValue.rawValue }
     }
 }

@@ -3,41 +3,56 @@ import SwiftUI
 struct BoardView: View {
     @StateObject private var game = GameModel()
     @EnvironmentObject var appSettings: AppSettingsStore
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showSettings = false
     @State private var showStats = false
     @State private var showWin = false
 
     private var lang: AppLanguage { appSettings.language }
+    private var textColor: Color { Theme.primaryText(for: colorScheme) }
+
+    private let horizontalPadding: CGFloat = 12
+    private let columnSpacing: CGFloat = 6
+
+    private func cardMetrics(for width: CGFloat) -> CardMetrics {
+        let available = width - horizontalPadding * 2
+        let rawWidth = (available - columnSpacing * 6) / 7
+        return CardMetrics(width: min(max(rawWidth, 36), 90))
+    }
 
     var body: some View {
-        ZStack {
-            Theme.tableFelt(for: .dark).ignoresSafeArea()
+        GeometryReader { geo in
+            let metrics = cardMetrics(for: geo.size.width)
 
-            VStack(spacing: 16) {
-                header
+            ZStack {
+                Theme.tableFelt(for: colorScheme).ignoresSafeArea()
 
-                HStack(alignment: .top, spacing: 14) {
-                    StockView(game: game)
-                    WasteView(game: game)
-                    Spacer(minLength: 8)
-                    ForEach(Suit.allCases, id: \.self) { suit in
-                        FoundationView(game: game, suit: suit)
+                VStack(spacing: 16) {
+                    header
+
+                    HStack(alignment: .top, spacing: columnSpacing) {
+                        StockView(game: game, metrics: metrics)
+                        WasteView(game: game, metrics: metrics)
+                        Spacer(minLength: columnSpacing)
+                        ForEach(Suit.allCases, id: \.self) { suit in
+                            FoundationView(game: game, suit: suit, metrics: metrics)
+                        }
                     }
-                }
-                .padding(.horizontal)
+                    .padding(.horizontal, horizontalPadding)
 
-                HStack(alignment: .top, spacing: 10) {
-                    ForEach(0..<7, id: \.self) { column in
-                        TableauColumnView(game: game, column: column)
+                    HStack(alignment: .top, spacing: columnSpacing) {
+                        ForEach(0..<7, id: \.self) { column in
+                            TableauColumnView(game: game, column: column, metrics: metrics)
+                        }
                     }
+                    .padding(.horizontal, horizontalPadding)
+
+                    Spacer()
+
+                    toolbar
                 }
-                .padding(.horizontal, 8)
-
-                Spacer()
-
-                toolbar
+                .padding(.top)
             }
-            .padding(.top)
         }
         .onChange(of: game.wonAnimationTrigger) { _, newValue in
             if newValue > 0 { showWin = true }
@@ -69,7 +84,7 @@ struct BoardView: View {
             }
         }
         .font(.footnote.weight(.semibold))
-        .foregroundStyle(Theme.cream)
+        .foregroundStyle(textColor)
         .padding(.horizontal)
     }
 
@@ -110,7 +125,7 @@ struct BoardView: View {
                 Image(systemName: icon).font(.title3)
                 Text(title).font(.caption2)
             }
-            .foregroundStyle(disabled ? Theme.cream.opacity(0.3) : Theme.cream)
+            .foregroundStyle(disabled ? textColor.opacity(0.3) : textColor)
         }
         .disabled(disabled)
     }

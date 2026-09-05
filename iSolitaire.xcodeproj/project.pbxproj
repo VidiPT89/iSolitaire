@@ -16,12 +16,14 @@
 		3875C1737604512BD2C03E9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79E4D24B4015DFA2D284324D /* Assets.xcassets */; };
 		43AA9B2BD5230F7264957B69 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D882DA2039A03256B5F4C84 /* L10n.swift */; };
 		473F92399CD2769505FDEB02 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F5B65CD80A56C28429A7A8 /* AppLanguage.swift */; };
+		489B37EE713EDA58B95A7214 /* HapticsPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F78F37063EBB2786373493 /* HapticsPlayer.swift */; };
 		54D0087C8215CB18E28C1A92 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E791EA3EAB193C794BF6A428 /* GameState.swift */; };
 		562BDA4451F140FA9547F201 /* StatsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */; };
 		5F2E4DB8251CB6F6D190398A /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B723C2F42FABDC57ED284 /* SplashView.swift */; };
 		72EF37A8F497929F3748018B /* CardDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7277870FB8BC0C894BCD91 /* CardDropDelegate.swift */; };
 		A6D87DFC2C023CF25AC01ECD /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC7247814377633BF484E25 /* StatsView.swift */; };
 		A782D081D995F81F1D0EA3B9 /* WinOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47B2409048ADBB0038E7CE7 /* WinOverlay.swift */; };
+		D3D7CD73AE9C6E339903CC04 /* GameStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3D7A0EDE68D99C635AC26 /* GameStateStore.swift */; };
 		D5BC813538C1B4EDCEBC7256 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97328EA4FE70F2E0625E4AA /* BoardView.swift */; };
 		DDF9C9EFBC449B9AE7BAB149 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */; };
 		FAE4D1E7754FED8B6E1CD787 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC604559EA94B4574E203DF4 /* Theme.swift */; };
@@ -30,6 +32,7 @@
 /* Begin PBXFileReference section */
 		0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStore.swift; sourceTree = "<group>"; };
 		2025B8EB61381C66DFDB2319 /* iSolitaire.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = iSolitaire.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23F78F37063EBB2786373493 /* HapticsPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsPlayer.swift; sourceTree = "<group>"; };
 		2C84F7053F4D69BD5B4C963C /* DrawMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawMode.swift; sourceTree = "<group>"; };
 		33F5B65CD80A56C28429A7A8 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -43,6 +46,7 @@
 		B47B2409048ADBB0038E7CE7 /* WinOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinOverlay.swift; sourceTree = "<group>"; };
 		B65AEDB6ACBB51A7E936D516 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		B9B09FC8560CA4AEEA98F53E /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		D4C3D7A0EDE68D99C635AC26 /* GameStateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStateStore.swift; sourceTree = "<group>"; };
 		D97328EA4FE70F2E0625E4AA /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		DED80C1B46FA0CE6A68D85FF /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		E791EA3EAB193C794BF6A428 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
@@ -111,6 +115,8 @@
 			children = (
 				DED80C1B46FA0CE6A68D85FF /* GameModel.swift */,
 				E791EA3EAB193C794BF6A428 /* GameState.swift */,
+				D4C3D7A0EDE68D99C635AC26 /* GameStateStore.swift */,
+				23F78F37063EBB2786373493 /* HapticsPlayer.swift */,
 				0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */,
 			);
 			path = Game;
@@ -216,6 +222,8 @@
 				2BB2952CC2B890233E1CCCF5 /* DrawMode.swift in Sources */,
 				179C6DDFB97B5EEA3AB4AA85 /* GameModel.swift in Sources */,
 				54D0087C8215CB18E28C1A92 /* GameState.swift in Sources */,
+				D3D7CD73AE9C6E339903CC04 /* GameStateStore.swift in Sources */,
+				489B37EE713EDA58B95A7214 /* HapticsPlayer.swift in Sources */,
 				43AA9B2BD5230F7264957B69 /* L10n.swift in Sources */,
 				37701F2F15A6D34499F6C183 /* PileViews.swift in Sources */,
 				DDF9C9EFBC449B9AE7BAB149 /* SettingsView.swift in Sources */,

@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 struct CardDropDelegate: DropDelegate {
     let destination: PileKind
     let game: GameModel
-    var onDropSucceeded: () -> Void = {}
 
     func performDrop(info: DropInfo) -> Bool {
         guard let provider = info.itemProviders(for: [.plainText]).first else { return false }
@@ -14,8 +13,8 @@ struct CardDropDelegate: DropDelegate {
             let sourceRaw = string.components(separatedBy: "|").last ?? ""
             guard let source = PileKind.decode(sourceRaw) else { return }
             Task { @MainActor in
-                if game.tryMove(cardID: uuid, from: source, to: destination) {
-                    onDropSucceeded()
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                    _ = game.tryMove(cardID: uuid, from: source, to: destination)
                 }
             }
         }
