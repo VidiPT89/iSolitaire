@@ -28,6 +28,18 @@ func destinationPile(at location: CGPoint, in frames: [PileKind: CGRect], exclud
     return nil
 }
 
+/// A card (or run of cards) currently being dragged. Rendered in a single board-level
+/// overlay instead of locally inside its source pile — `zIndex` only ever wins against
+/// sibling views in the SAME container, so a card raised with `zIndex` inside its own
+/// column still rendered behind a neighboring column once dragged over it. An overlay
+/// anchored to the whole board is always painted above every pile, so this can't happen.
+struct DragPreview {
+    let cards: [Card]
+    let source: PileKind
+    var location: CGPoint
+    let metrics: CardMetrics
+}
+
 /// Detects a double-tap from two consecutive drag-gesture "taps" (near-zero movement)
 /// on the same card, without using SwiftUI's `TapGesture`. A `TapGesture` combined with
 /// a `DragGesture` on the same view — even via `.exclusively(before:)` — makes SwiftUI

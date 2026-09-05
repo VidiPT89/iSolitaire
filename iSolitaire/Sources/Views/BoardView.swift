@@ -9,8 +9,7 @@ struct BoardView: View {
     @State private var showStats = false
     @State private var showWin = false
     @State private var pileFrames: [PileKind: CGRect] = [:]
-    @State private var draggingCardID: UUID?
-    @Namespace private var dealNamespace
+    @State private var dragPreview: DragPreview?
 
     init(startFresh: Bool = false) {
         _game = StateObject(wrappedValue: GameModel(startFresh: startFresh))
@@ -40,17 +39,17 @@ struct BoardView: View {
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         StockView(game: game, metrics: metrics)
-                        WasteView(game: game, metrics: metrics, pileFrames: pileFrames, namespace: dealNamespace, draggingCardID: $draggingCardID)
+                        WasteView(game: game, metrics: metrics, pileFrames: pileFrames, dragPreview: $dragPreview)
                         Spacer(minLength: columnSpacing)
                         ForEach(Suit.allCases, id: \.self) { suit in
-                            FoundationView(game: game, suit: suit, metrics: metrics, pileFrames: pileFrames, namespace: dealNamespace, draggingCardID: $draggingCardID)
+                            FoundationView(game: game, suit: suit, metrics: metrics, pileFrames: pileFrames, dragPreview: $dragPreview)
                         }
                     }
                     .padding(.horizontal, horizontalPadding)
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         ForEach(0..<7, id: \.self) { column in
-                            TableauColumnView(game: game, column: column, metrics: metrics, pileFrames: pileFrames, namespace: dealNamespace, draggingCardID: $draggingCardID)
+                            TableauColumnView(game: game, column: column, metrics: metrics, pileFrames: pileFrames, dragPreview: $dragPreview)
                         }
                     }
                     .padding(.horizontal, horizontalPadding)
@@ -60,6 +59,10 @@ struct BoardView: View {
                     toolbar
                 }
                 .padding(.top)
+
+                if let dragPreview {
+                    DragPreviewOverlay(preview: dragPreview)
+                }
             }
             .coordinateSpace(name: "board")
             .onPreferenceChange(PileFramePreferenceKey.self) { pileFrames = $0 }

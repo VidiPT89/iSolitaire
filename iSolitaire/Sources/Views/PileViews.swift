@@ -7,6 +7,8 @@ struct CardMetrics {
     var overlap: CGFloat { width * 26 / 64 }
 }
 
+private let tapMoveThresholdSquared: CGFloat = 36 // ~6pt
+
 struct StockView: View {
     @ObservedObject var game: GameModel
     let metrics: CardMetrics
@@ -36,9 +38,7 @@ struct WasteView: View {
     @ObservedObject var game: GameModel
     let metrics: CardMetrics
     let pileFrames: [PileKind: CGRect]
-    let namespace: Namespace.ID
-    @Binding var draggingCardID: UUID?
-    @State private var dragOffset: CGSize = .zero
+    @Binding var dragPreview: DragPreview?
     @State private var tapTracker = DoubleTapTracker()
 
     var body: some View {
@@ -47,28 +47,30 @@ struct WasteView: View {
                 .strokeBorder(Color.primary.opacity(0.15), lineWidth: 1)
                 .frame(width: metrics.width, height: metrics.height)
             if let top = game.state.waste.last {
-                CardView(card: top, isHinted: game.hintedCardID == top.id, isDragging: draggingCardID == top.id, width: metrics.width, height: metrics.height)
-                    .matchedGeometryEffect(id: top.id, in: namespace)
+                let isBeingDragged = dragPreview?.source == .waste && dragPreview?.cards.first?.id == top.id
+                CardView(card: top, isHinted: game.hintedCardID == top.id, width: metrics.width, height: metrics.height)
+                    .opacity(isBeingDragged ? 0 : 1)
+                    .transition(.asymmetric(insertion: .scale(scale: 0.6).combined(with: .opacity), removal: .opacity))
                     .contentShape(Rectangle())
-                    .offset(dragOffset)
-                    .zIndex(draggingCardID == top.id ? 1000 : 0)
                     .gesture(
                         DragGesture(minimumDistance: 0, coordinateSpace: .named("board"))
                             .onChanged { value in
-                                guard value.translation.width * value.translation.width + value.translation.height * value.translation.height > 36 else { return }
-                                draggingCardID = top.id
-                                dragOffset = value.translation
+                                guard value.translation.width * value.translation.width + value.translation.height * value.translation.height > tapMoveThresholdSquared else { return }
+                                if dragPreview == nil {
+                                    dragPreview = DragPreview(cards: [top], source: .waste, location: value.location, metrics: metrics)
+                                } else {
+                                    dragPreview?.location = value.location
+                                }
                             }
                             .onEnded { value in
                                 let distance = value.translation.width * value.translation.width + value.translation.height * value.translation.height
-                                if distance <= 36 {
+                                if distance <= tapMoveThresholdSquared {
                                     if tapTracker.registerTap(on: top.id) {
                                         withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                                             _ = game.tryAutoMoveToFoundation(cardID: top.id, from: .waste)
                                         }
                                     }
-                                    dragOffset = .zero
-                                    draggingCardID = nil
+                                    dragPreview = nil
                                     return
                                 }
                                 let destination = destinationPile(at: value.location, in: pileFrames, excluding: .waste)
@@ -76,9 +78,8 @@ struct WasteView: View {
                                     if let destination {
                                         _ = game.tryMove(cardID: top.id, from: .waste, to: destination)
                                     }
-                                    dragOffset = .zero
                                 }
-                                draggingCardID = nil
+                                dragPreview = nil
                             }
                     )
             }
@@ -92,9 +93,7 @@ struct FoundationView: View {
     let suit: Suit
     let metrics: CardMetrics
     let pileFrames: [PileKind: CGRect]
-    let namespace: Namespace.ID
-    @Binding var draggingCardID: UUID?
-    @State private var dragOffset: CGSize = .zero
+    @Binding var dragPreview: DragPreview?
 
     var body: some View {
         ZStack {
@@ -105,27 +104,29 @@ struct FoundationView: View {
                 .font(.system(size: metrics.width * 0.4))
                 .foregroundStyle(Theme.scorched.opacity(0.4))
             if let top = game.state.foundations[suit]?.last {
-                CardView(card: top, isDragging: draggingCardID == top.id, width: metrics.width, height: metrics.height)
-                    .matchedGeometryEffect(id: top.id, in: namespace)
+                let source = PileKind.foundation(suit)
+                let isBeingDragged = dragPreview?.source == source && dragPreview?.cards.first?.id == top.id
+                CardView(card: top, width: metrics.width, height: metrics.height)
+                    .opacity(isBeingDragged ? 0 : 1)
+                    .transition(.asymmetric(insertion: .scale(scale: 0.6).combined(with: .opacity), removal: .opacity))
                     .contentShape(Rectangle())
-                    .offset(dragOffset)
-                    .zIndex(draggingCardID == top.id ? 1000 : 0)
                     .gesture(
-                        DragGesture(minimumDistance: 10, coordinateSpace: .named("board"))
+                        DragGesture(minimumDistance: 4, coordinateSpace: .named("board"))
                             .onChanged { value in
-                                draggingCardID = top.id
-                                dragOffset = value.translation
+                                if dragPreview == nil {
+                                    dragPreview = DragPreview(cards: [top], source: source, location: value.location, metrics: metrics)
+                                } else {
+                                    dragPreview?.location = value.location
+                                }
                             }
                             .onEnded { value in
-                                let source = PileKind.foundation(suit)
                                 let destination = destinationPile(at: value.location, in: pileFrames, excluding: source)
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
                                     if let destination {
                                         _ = game.tryMove(cardID: top.id, from: source, to: destination)
                                     }
-                                    dragOffset = .zero
                                 }
-                                draggingCardID = nil
+                                dragPreview = nil
                             }
                     )
             }
@@ -141,67 +142,82 @@ struct TableauColumnView: View {
     let column: Int
     let metrics: CardMetrics
     let pileFrames: [PileKind: CGRect]
-    let namespace: Namespace.ID
-    @Binding var draggingCardID: UUID?
-
-    @State private var dragStartIndex: Int?
-    @State private var dragOffset: CGSize = .zero
+    @Binding var dragPreview: DragPreview?
     @State private var tapTracker = DoubleTapTracker()
 
     var body: some View {
         let pile = game.state.tableau[column]
+        let source = PileKind.tableau(column)
         ZStack(alignment: .top) {
             RoundedRectangle(cornerRadius: 8)
                 .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
                 .frame(width: metrics.width, height: metrics.height)
 
             ForEach(Array(pile.enumerated()), id: \.element.id) { index, card in
-                let isBeingDragged = card.isFaceUp && dragStartIndex.map { index >= $0 } ?? false
-                CardView(card: card, isHinted: game.hintedCardID == card.id, isDragging: isBeingDragged && draggingCardID == card.id, width: metrics.width, height: metrics.height)
-                    .matchedGeometryEffect(id: card.id, in: namespace)
+                let isBeingDragged = card.isFaceUp
+                    && dragPreview?.source == source
+                    && (dragPreview?.cards.contains { $0.id == card.id } ?? false)
+                CardView(card: card, isHinted: game.hintedCardID == card.id, width: metrics.width, height: metrics.height)
+                    .opacity(isBeingDragged ? 0 : 1)
+                    .transition(.asymmetric(insertion: .scale(scale: 0.6).combined(with: .opacity), removal: .opacity))
                     .contentShape(Rectangle())
                     .offset(y: CGFloat(index) * metrics.overlap)
-                    .offset(isBeingDragged ? dragOffset : .zero)
-                    .zIndex(isBeingDragged ? 1000 + Double(index) : Double(index))
+                    .zIndex(Double(index))
                     .gesture(
                         DragGesture(minimumDistance: 0, coordinateSpace: .named("board"))
                             .onChanged { value in
                                 guard card.isFaceUp else { return }
-                                guard value.translation.width * value.translation.width + value.translation.height * value.translation.height > 36 else { return }
-                                dragStartIndex = index
-                                draggingCardID = card.id
-                                dragOffset = value.translation
+                                guard value.translation.width * value.translation.width + value.translation.height * value.translation.height > tapMoveThresholdSquared else { return }
+                                if dragPreview == nil {
+                                    dragPreview = DragPreview(cards: Array(pile[index...]), source: source, location: value.location, metrics: metrics)
+                                } else {
+                                    dragPreview?.location = value.location
+                                }
                             }
                             .onEnded { value in
                                 guard card.isFaceUp else { return }
                                 let distance = value.translation.width * value.translation.width + value.translation.height * value.translation.height
-                                if distance <= 36 {
+                                if distance <= tapMoveThresholdSquared {
                                     if tapTracker.registerTap(on: card.id) {
                                         withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                                            _ = game.tryAutoMoveToFoundation(cardID: card.id, from: .tableau(column))
+                                            _ = game.tryAutoMoveToFoundation(cardID: card.id, from: source)
                                         }
                                     }
-                                    dragOffset = .zero
-                                    dragStartIndex = nil
-                                    draggingCardID = nil
+                                    dragPreview = nil
                                     return
                                 }
-                                let source = PileKind.tableau(column)
                                 let destination = destinationPile(at: value.location, in: pileFrames, excluding: source)
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
                                     if let destination {
                                         _ = game.tryMove(cardID: card.id, from: source, to: destination)
                                     }
-                                    dragOffset = .zero
                                 }
-                                dragStartIndex = nil
-                                draggingCardID = nil
+                                dragPreview = nil
                             }
                     )
             }
         }
         .frame(width: metrics.width, height: metrics.height + CGFloat(max(pile.count - 1, 0)) * metrics.overlap, alignment: .top)
         .contentShape(Rectangle())
-        .reportPileFrame(.tableau(column))
+        .reportPileFrame(source)
+    }
+}
+
+/// Renders whichever card (or run of cards) is currently being dragged, in a single
+/// board-level overlay so it always paints above every pile regardless of which
+/// column it's currently hovering over.
+struct DragPreviewOverlay: View {
+    let preview: DragPreview
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            ForEach(Array(preview.cards.enumerated()), id: \.element.id) { index, card in
+                CardView(card: card, isDragging: true, width: preview.metrics.width, height: preview.metrics.height)
+                    .offset(y: CGFloat(index) * preview.metrics.overlap)
+            }
+        }
+        .frame(width: preview.metrics.width, height: preview.metrics.height, alignment: .top)
+        .position(preview.location)
+        .allowsHitTesting(false)
     }
 }
