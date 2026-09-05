@@ -100,20 +100,17 @@ struct CardView: View {
         switch rank {
         case .ace:
             Image(systemName: suitSymbolName)
-                .font(.system(size: size.width * 0.44))
+                .font(.system(size: size.width * 0.42))
                 .foregroundStyle(color)
         case .jack, .queen, .king:
             faceCardEmblem(color: color, size: size)
         default:
-            let positions = pipPositions(for: rank.rawValue)
-            let pipSize = size.width * 0.15
-            ForEach(Array(positions.enumerated()), id: \.offset) { _, point in
-                Image(systemName: suitSymbolName)
-                    .font(.system(size: pipSize))
-                    .foregroundStyle(color)
-                    .rotationEffect(.degrees(point.y > 0.5 ? 180 : 0))
-                    .position(x: point.x * size.width, y: point.y * size.height)
-            }
+            // At the small card sizes a 7-column tableau needs, a full pip grid
+            // (2-10 symbols) collides with the corner indices and reads as clutter.
+            // A single centered glyph — the corner already shows the count — stays legible.
+            Image(systemName: suitSymbolName)
+                .font(.system(size: size.width * 0.34))
+                .foregroundStyle(color.opacity(0.85))
         }
     }
 
@@ -132,21 +129,6 @@ struct CardView: View {
                 .strokeBorder(color.opacity(0.35), lineWidth: 1.5)
                 .padding(size.width * 0.12)
         )
-    }
-
-    private func pipPositions(for count: Int) -> [(x: Double, y: Double)] {
-        switch count {
-        case 2: return [(0.5, 0.16), (0.5, 0.84)]
-        case 3: return [(0.5, 0.16), (0.5, 0.5), (0.5, 0.84)]
-        case 4: return [(0.28, 0.18), (0.72, 0.18), (0.28, 0.82), (0.72, 0.82)]
-        case 5: return [(0.28, 0.18), (0.72, 0.18), (0.5, 0.5), (0.28, 0.82), (0.72, 0.82)]
-        case 6: return [(0.28, 0.18), (0.72, 0.18), (0.28, 0.5), (0.72, 0.5), (0.28, 0.82), (0.72, 0.82)]
-        case 7: return [(0.28, 0.18), (0.72, 0.18), (0.5, 0.34), (0.28, 0.5), (0.72, 0.5), (0.28, 0.82), (0.72, 0.82)]
-        case 8: return [(0.28, 0.16), (0.72, 0.16), (0.5, 0.32), (0.28, 0.5), (0.72, 0.5), (0.5, 0.68), (0.28, 0.84), (0.72, 0.84)]
-        case 9: return [(0.28, 0.14), (0.72, 0.14), (0.28, 0.36), (0.72, 0.36), (0.5, 0.5), (0.28, 0.64), (0.72, 0.64), (0.28, 0.86), (0.72, 0.86)]
-        case 10: return [(0.28, 0.12), (0.72, 0.12), (0.5, 0.26), (0.28, 0.38), (0.72, 0.38), (0.28, 0.62), (0.72, 0.62), (0.5, 0.74), (0.28, 0.88), (0.72, 0.88)]
-        default: return []
-        }
     }
 
     private var backContent: some View {
