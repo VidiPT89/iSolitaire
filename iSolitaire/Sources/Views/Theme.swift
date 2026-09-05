@@ -19,10 +19,16 @@ enum Theme {
         endPoint: .trailing
     )
 
-    static func tableFelt(for scheme: ColorScheme) -> LinearGradient {
-        scheme == .dark
-        ? LinearGradient(colors: [ink, charcoal], startPoint: .top, endPoint: .bottom)
-        : LinearGradient(colors: [Color(red: 0.99, green: 0.93, blue: 0.82), Color(red: 0.97, green: 0.85, blue: 0.64)], startPoint: .top, endPoint: .bottom)
+    static func tableFelt(for scheme: ColorScheme) -> some View {
+        ZStack {
+            if scheme == .dark {
+                LinearGradient(colors: [ink, charcoal], startPoint: .top, endPoint: .bottom)
+                RadialGradient(colors: [ember.opacity(0.10), .clear], center: .center, startRadius: 0, endRadius: 500)
+            } else {
+                LinearGradient(colors: [Color(red: 0.99, green: 0.93, blue: 0.82), Color(red: 0.97, green: 0.85, blue: 0.64)], startPoint: .top, endPoint: .bottom)
+                RadialGradient(colors: [ember.opacity(0.08), .clear], center: .center, startRadius: 0, endRadius: 500)
+            }
+        }
     }
 
     static func primaryText(for scheme: ColorScheme) -> Color {

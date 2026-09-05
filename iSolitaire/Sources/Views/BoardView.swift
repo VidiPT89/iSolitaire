@@ -10,6 +10,7 @@ struct BoardView: View {
     @State private var showWin = false
     @State private var pileFrames: [PileKind: CGRect] = [:]
     @State private var draggingCardID: UUID?
+    @Namespace private var dealNamespace
 
     init(startFresh: Bool = false) {
         _game = StateObject(wrappedValue: GameModel(startFresh: startFresh))
@@ -39,17 +40,17 @@ struct BoardView: View {
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         StockView(game: game, metrics: metrics)
-                        WasteView(game: game, metrics: metrics, pileFrames: pileFrames, draggingCardID: $draggingCardID)
+                        WasteView(game: game, metrics: metrics, pileFrames: pileFrames, namespace: dealNamespace, draggingCardID: $draggingCardID)
                         Spacer(minLength: columnSpacing)
                         ForEach(Suit.allCases, id: \.self) { suit in
-                            FoundationView(game: game, suit: suit, metrics: metrics, pileFrames: pileFrames, draggingCardID: $draggingCardID)
+                            FoundationView(game: game, suit: suit, metrics: metrics, pileFrames: pileFrames, namespace: dealNamespace, draggingCardID: $draggingCardID)
                         }
                     }
                     .padding(.horizontal, horizontalPadding)
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         ForEach(0..<7, id: \.self) { column in
-                            TableauColumnView(game: game, column: column, metrics: metrics, pileFrames: pileFrames, draggingCardID: $draggingCardID)
+                            TableauColumnView(game: game, column: column, metrics: metrics, pileFrames: pileFrames, namespace: dealNamespace, draggingCardID: $draggingCardID)
                         }
                     }
                     .padding(.horizontal, horizontalPadding)

@@ -36,6 +36,7 @@ struct WasteView: View {
     @ObservedObject var game: GameModel
     let metrics: CardMetrics
     let pileFrames: [PileKind: CGRect]
+    let namespace: Namespace.ID
     @Binding var draggingCardID: UUID?
     @State private var dragOffset: CGSize = .zero
 
@@ -46,6 +47,7 @@ struct WasteView: View {
                 .frame(width: metrics.width, height: metrics.height)
             if let top = game.state.waste.last {
                 CardView(card: top, isHinted: game.hintedCardID == top.id, width: metrics.width, height: metrics.height)
+                    .matchedGeometryEffect(id: top.id, in: namespace)
                     .contentShape(Rectangle())
                     .offset(dragOffset)
                     .zIndex(draggingCardID == top.id ? 1000 : 0)
@@ -84,6 +86,7 @@ struct FoundationView: View {
     let suit: Suit
     let metrics: CardMetrics
     let pileFrames: [PileKind: CGRect]
+    let namespace: Namespace.ID
     @Binding var draggingCardID: UUID?
     @State private var dragOffset: CGSize = .zero
 
@@ -97,6 +100,7 @@ struct FoundationView: View {
                 .foregroundStyle(Theme.scorched.opacity(0.4))
             if let top = game.state.foundations[suit]?.last {
                 CardView(card: top, width: metrics.width, height: metrics.height)
+                    .matchedGeometryEffect(id: top.id, in: namespace)
                     .contentShape(Rectangle())
                     .offset(dragOffset)
                     .zIndex(draggingCardID == top.id ? 1000 : 0)
@@ -131,6 +135,7 @@ struct TableauColumnView: View {
     let column: Int
     let metrics: CardMetrics
     let pileFrames: [PileKind: CGRect]
+    let namespace: Namespace.ID
     @Binding var draggingCardID: UUID?
 
     @State private var dragStartIndex: Int?
@@ -146,6 +151,7 @@ struct TableauColumnView: View {
             ForEach(Array(pile.enumerated()), id: \.element.id) { index, card in
                 let isBeingDragged = card.isFaceUp && dragStartIndex.map { index >= $0 } ?? false
                 CardView(card: card, isHinted: game.hintedCardID == card.id, width: metrics.width, height: metrics.height)
+                    .matchedGeometryEffect(id: card.id, in: namespace)
                     .contentShape(Rectangle())
                     .offset(y: CGFloat(index) * metrics.overlap)
                     .offset(isBeingDragged ? dragOffset : .zero)
