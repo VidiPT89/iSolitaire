@@ -36,6 +36,8 @@ enum L10nKey: String {
     case website
     case github
     case winRate
+    case autoCompleteSuggestion
+    case noMovesMessage
 }
 
 enum L10n {
@@ -76,6 +78,8 @@ enum L10n {
             .website: "ividi.dev",
             .github: "github.com/VidiPT89",
             .winRate: "Taxa de Vitórias",
+            .autoCompleteSuggestion: "Já podes terminar automaticamente!",
+            .noMovesMessage: "Não há nenhuma jogada possível. Anula a última jogada ou começa um jogo novo.",
         ],
         .english: [
             .appName: "iSolitaire",
@@ -112,6 +116,8 @@ enum L10n {
             .website: "ividi.dev",
             .github: "github.com/VidiPT89",
             .winRate: "Win Rate",
+            .autoCompleteSuggestion: "You can finish automatically now!",
+            .noMovesMessage: "There's no valid move available. Undo the last move or start a new game.",
         ],
     ]
 

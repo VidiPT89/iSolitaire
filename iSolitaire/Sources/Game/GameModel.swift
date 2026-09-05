@@ -15,6 +15,7 @@ final class GameModel: ObservableObject {
     }
     @Published var hintedCardID: UUID?
     @Published var lastAutoCompleteAvailable: Bool = false
+    @Published private(set) var isStuck: Bool = false
     @Published var wonAnimationTrigger: Int = 0
 
     private var undoStack: [GameState] = []
@@ -29,6 +30,7 @@ final class GameModel: ObservableObject {
         if !startFresh, let saved {
             self.state = saved
             evaluateAutoComplete()
+            evaluateStuckState()
             startTimer()
         } else {
             self.state = saved ?? GameState()
@@ -66,6 +68,7 @@ final class GameModel: ObservableObject {
         undoStack.removeAll()
         hintedCardID = nil
         lastAutoCompleteAvailable = false
+        isStuck = false
         startTimer()
     }
 
@@ -94,6 +97,8 @@ final class GameModel: ObservableObject {
         guard let previous = undoStack.popLast() else { return }
         state = previous
         hintedCardID = nil
+        evaluateAutoComplete()
+        evaluateStuckState()
     }
 
     var canUndo: Bool { !undoStack.isEmpty }
@@ -124,6 +129,7 @@ final class GameModel: ObservableObject {
         impactFeedback.cardDrawn()
         soundPlayer.cardFlip()
         evaluateAutoComplete()
+        evaluateStuckState()
     }
 
     // MARK: - Move validation
@@ -167,6 +173,7 @@ final class GameModel: ObservableObject {
         soundPlayer.cardPlace()
         checkWin()
         evaluateAutoComplete()
+        evaluateStuckState()
         return true
     }
 
@@ -292,6 +299,43 @@ final class GameModel: ObservableObject {
         lastAutoCompleteAvailable = allFaceUp && state.stock.isEmpty
     }
 
+    // MARK: - Stuck detection
+
+    /// Whether drawing (or recycling the waste back into the stock) could still change the board.
+    private var canDrawOrRecycle: Bool {
+        if !state.stock.isEmpty { return true }
+        if state.waste.isEmpty { return false }
+        if settings.recycleMode == .limited && state.recyclesUsed >= settings.recycleLimit { return false }
+        return true
+    }
+
+    /// Same move set `requestHint()` looks for (foundation moves and tableau-to-tableau
+    /// moves from the top of each pile), just returning whether any exists instead of
+    /// highlighting one.
+    private var hasAnyTopCardMove: Bool {
+        for column in state.tableau.indices {
+            guard let top = state.tableau[column].last, top.isFaceUp else { continue }
+            if canPlace(top, onFoundation: top.suit) { return true }
+        }
+        if let top = state.waste.last, canPlace(top, onFoundation: top.suit) { return true }
+        for column in state.tableau.indices {
+            guard let top = state.tableau[column].last, top.isFaceUp else { continue }
+            for other in state.tableau.indices where other != column {
+                if canPlace(top, onTableauTop: state.tableau[other].last) { return true }
+            }
+        }
+        if let top = state.waste.last {
+            for column in state.tableau.indices where canPlace(top, onTableauTop: state.tableau[column].last) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private func evaluateStuckState() {
+        isStuck = !canDrawOrRecycle && !hasAnyTopCardMove && !state.isWon
+    }
+
     func autoComplete() {
         guard lastAutoCompleteAvailable else { return }
         pushUndo()
@@ -331,6 +375,7 @@ final class GameModel: ObservableObject {
             try? await Task.sleep(nanoseconds: 90_000_000)
         }
         checkWin()
+        evaluateStuckState()
     }
 
     // MARK: - Win

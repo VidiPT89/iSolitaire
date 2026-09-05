@@ -10,6 +10,7 @@ struct BoardView: View {
     @State private var showWin = false
     @State private var pileFrames: [PileKind: CGRect] = [:]
     @State private var dragPreview: DragPreview?
+    @State private var autoCompletePulse = false
 
     init(startFresh: Bool = false) {
         _game = StateObject(wrappedValue: GameModel(startFresh: startFresh))
@@ -36,6 +37,28 @@ struct BoardView: View {
 
                 VStack(spacing: 16) {
                     header
+
+                    if game.lastAutoCompleteAvailable {
+                        suggestionBanner(
+                            icon: "wand.and.stars",
+                            text: L10n.t(.autoCompleteSuggestion, lang),
+                            actionTitle: L10n.t(.autoComplete, lang),
+                            tint: AnyShapeStyle(Theme.accentGradient)
+                        ) {
+                            withAnimation { game.autoComplete() }
+                        }
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    } else if game.isStuck {
+                        suggestionBanner(
+                            icon: "exclamationmark.triangle.fill",
+                            text: L10n.t(.noMovesMessage, lang),
+                            actionTitle: L10n.t(.newGame, lang),
+                            tint: AnyShapeStyle(Color.red.opacity(0.85))
+                        ) {
+                            withAnimation { game.newGame() }
+                        }
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
 
                     HStack(alignment: .top, spacing: columnSpacing) {
                         StockView(game: game, metrics: metrics)
@@ -69,6 +92,13 @@ struct BoardView: View {
         }
         .onChange(of: game.wonAnimationTrigger) { _, newValue in
             if newValue > 0 { showWin = true }
+        }
+        .onChange(of: game.lastAutoCompleteAvailable) { _, newValue in
+            if newValue {
+                withAnimation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true)) { autoCompletePulse = true }
+            } else {
+                autoCompletePulse = false
+            }
         }
         .sheet(isPresented: $showSettings) {
             SettingsView(gameSettings: $game.settings).environmentObject(appSettings)
@@ -112,7 +142,7 @@ struct BoardView: View {
             toolbarButton(icon: "lightbulb.fill", title: L10n.t(.hint, lang)) {
                 withAnimation { game.requestHint() }
             }
-            toolbarButton(icon: "wand.and.stars", title: L10n.t(.autoComplete, lang), disabled: !game.lastAutoCompleteAvailable) {
+            toolbarButton(icon: "wand.and.stars", title: L10n.t(.autoComplete, lang), disabled: !game.lastAutoCompleteAvailable, highlighted: autoCompletePulse) {
                 withAnimation { game.autoComplete() }
             }
             toolbarButton(icon: "arrow.clockwise", title: L10n.t(.newGame, lang)) {
@@ -135,15 +165,33 @@ struct BoardView: View {
         .background(Theme.accentGradient.opacity(0.18), in: RoundedRectangle(cornerRadius: 10))
     }
 
-    private func toolbarButton(icon: String, title: String, disabled: Bool = false, action: @escaping () -> Void) -> some View {
+    private func toolbarButton(icon: String, title: String, disabled: Bool = false, highlighted: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Image(systemName: icon).font(.title3)
                 Text(title).font(.caption2)
             }
-            .foregroundStyle(disabled ? textColor.opacity(0.3) : textColor)
+            .foregroundStyle(highlighted ? Theme.ember : (disabled ? textColor.opacity(0.3) : textColor))
+            .scaleEffect(highlighted ? 1.1 : 1.0)
         }
         .disabled(disabled)
+    }
+
+    private func suggestionBanner(icon: String, text: String, actionTitle: String, tint: AnyShapeStyle, action: @escaping () -> Void) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+            Text(text).font(.footnote.weight(.medium))
+            Spacer()
+            Button(actionTitle, action: action)
+                .font(.footnote.weight(.bold))
+                .buttonStyle(.borderedProminent)
+                .tint(Color.black.opacity(0.2))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(tint, in: RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal)
     }
 
     private func timeString(_ seconds: Int) -> String {
