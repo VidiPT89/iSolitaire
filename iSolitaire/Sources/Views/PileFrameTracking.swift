@@ -27,3 +27,27 @@ func destinationPile(at location: CGPoint, in frames: [PileKind: CGRect], exclud
     }
     return nil
 }
+
+/// Detects a double-tap from two consecutive drag-gesture "taps" (near-zero movement)
+/// on the same card, without using SwiftUI's `TapGesture`. A `TapGesture` combined with
+/// a `DragGesture` on the same view — even via `.exclusively(before:)` — makes SwiftUI
+/// hold off starting the drag until it can rule out a second tap, which reads as a
+/// noticeable delay/lag on every ordinary drag. Tracking taps manually keeps the drag
+/// instantaneous.
+struct DoubleTapTracker {
+    private var lastTapCardID: UUID?
+    private var lastTapDate: Date?
+
+    /// Call from a drag gesture's `onEnded` when the release barely moved. Returns
+    /// `true` if this completes a double-tap on the same card.
+    mutating func registerTap(on cardID: UUID) -> Bool {
+        if lastTapCardID == cardID, let previous = lastTapDate, Date().timeIntervalSince(previous) < 0.35 {
+            lastTapCardID = nil
+            lastTapDate = nil
+            return true
+        }
+        lastTapCardID = cardID
+        lastTapDate = Date()
+        return false
+    }
+}
