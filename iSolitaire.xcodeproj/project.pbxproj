@@ -1,0 +1,417 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		15BB53D67CC7BA57ED3E9BFA /* iSolitaireApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F470883D9A840B8CDF2CE1 /* iSolitaireApp.swift */; };
+		179C6DDFB97B5EEA3AB4AA85 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED80C1B46FA0CE6A68D85FF /* GameModel.swift */; };
+		2BB2952CC2B890233E1CCCF5 /* DrawMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C84F7053F4D69BD5B4C963C /* DrawMode.swift */; };
+		319735293FE2E7FE74686D78 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65AEDB6ACBB51A7E936D516 /* Card.swift */; };
+		3357D1FFB1C26BC91D23DAFF /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B09FC8560CA4AEEA98F53E /* CardView.swift */; };
+		37701F2F15A6D34499F6C183 /* PileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C1A8DF936C4077AD10E541 /* PileViews.swift */; };
+		3875C1737604512BD2C03E9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79E4D24B4015DFA2D284324D /* Assets.xcassets */; };
+		43AA9B2BD5230F7264957B69 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D882DA2039A03256B5F4C84 /* L10n.swift */; };
+		473F92399CD2769505FDEB02 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F5B65CD80A56C28429A7A8 /* AppLanguage.swift */; };
+		54D0087C8215CB18E28C1A92 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E791EA3EAB193C794BF6A428 /* GameState.swift */; };
+		562BDA4451F140FA9547F201 /* StatsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */; };
+		5F2E4DB8251CB6F6D190398A /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B723C2F42FABDC57ED284 /* SplashView.swift */; };
+		72EF37A8F497929F3748018B /* CardDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7277870FB8BC0C894BCD91 /* CardDropDelegate.swift */; };
+		A6D87DFC2C023CF25AC01ECD /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC7247814377633BF484E25 /* StatsView.swift */; };
+		A782D081D995F81F1D0EA3B9 /* WinOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47B2409048ADBB0038E7CE7 /* WinOverlay.swift */; };
+		D5BC813538C1B4EDCEBC7256 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97328EA4FE70F2E0625E4AA /* BoardView.swift */; };
+		DDF9C9EFBC449B9AE7BAB149 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */; };
+		FAE4D1E7754FED8B6E1CD787 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC604559EA94B4574E203DF4 /* Theme.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStore.swift; sourceTree = "<group>"; };
+		2025B8EB61381C66DFDB2319 /* iSolitaire.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = iSolitaire.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C84F7053F4D69BD5B4C963C /* DrawMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawMode.swift; sourceTree = "<group>"; };
+		33F5B65CD80A56C28429A7A8 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
+		3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		65C1A8DF936C4077AD10E541 /* PileViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PileViews.swift; sourceTree = "<group>"; };
+		79E4D24B4015DFA2D284324D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7D09E57E36DCE7D4CC5441C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		80F470883D9A840B8CDF2CE1 /* iSolitaireApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iSolitaireApp.swift; sourceTree = "<group>"; };
+		8D882DA2039A03256B5F4C84 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		8E7277870FB8BC0C894BCD91 /* CardDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDropDelegate.swift; sourceTree = "<group>"; };
+		977B723C2F42FABDC57ED284 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		B47B2409048ADBB0038E7CE7 /* WinOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinOverlay.swift; sourceTree = "<group>"; };
+		B65AEDB6ACBB51A7E936D516 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		B9B09FC8560CA4AEEA98F53E /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		D97328EA4FE70F2E0625E4AA /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		DED80C1B46FA0CE6A68D85FF /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
+		E791EA3EAB193C794BF6A428 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		EEC7247814377633BF484E25 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		FC604559EA94B4574E203DF4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0465707FC2DC2E25761AA85C = {
+			isa = PBXGroup;
+			children = (
+				40D90609F1FE185395F26AD2 /* iSolitaire */,
+				8A27F03275B8B8045B54A06F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1EBC723653B56AA111C1DE1F /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7D09E57E36DCE7D4CC5441C2 /* Info.plist */,
+				80F470883D9A840B8CDF2CE1 /* iSolitaireApp.swift */,
+				D4ECE16E9A4C525EE1B9CBF7 /* Game */,
+				C3F590BA8CB2EFA12FCA12C8 /* Localization */,
+				EE2DF38C1160C0C0381163B6 /* Models */,
+				37AD2590287890B3A64A777F /* Resources */,
+				DD8AC2124D3FB6C63AF75DEE /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		37AD2590287890B3A64A777F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				79E4D24B4015DFA2D284324D /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		40D90609F1FE185395F26AD2 /* iSolitaire */ = {
+			isa = PBXGroup;
+			children = (
+				1EBC723653B56AA111C1DE1F /* Sources */,
+			);
+			path = iSolitaire;
+			sourceTree = "<group>";
+		};
+		8A27F03275B8B8045B54A06F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2025B8EB61381C66DFDB2319 /* iSolitaire.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C3F590BA8CB2EFA12FCA12C8 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				33F5B65CD80A56C28429A7A8 /* AppLanguage.swift */,
+				8D882DA2039A03256B5F4C84 /* L10n.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		D4ECE16E9A4C525EE1B9CBF7 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				DED80C1B46FA0CE6A68D85FF /* GameModel.swift */,
+				E791EA3EAB193C794BF6A428 /* GameState.swift */,
+				0F2DFEDCA48294AAC27693B6 /* StatsStore.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		DD8AC2124D3FB6C63AF75DEE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D97328EA4FE70F2E0625E4AA /* BoardView.swift */,
+				8E7277870FB8BC0C894BCD91 /* CardDropDelegate.swift */,
+				B9B09FC8560CA4AEEA98F53E /* CardView.swift */,
+				65C1A8DF936C4077AD10E541 /* PileViews.swift */,
+				3FC7CC8DED2BFD8CEAC6BFEE /* SettingsView.swift */,
+				977B723C2F42FABDC57ED284 /* SplashView.swift */,
+				EEC7247814377633BF484E25 /* StatsView.swift */,
+				FC604559EA94B4574E203DF4 /* Theme.swift */,
+				B47B2409048ADBB0038E7CE7 /* WinOverlay.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EE2DF38C1160C0C0381163B6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B65AEDB6ACBB51A7E936D516 /* Card.swift */,
+				2C84F7053F4D69BD5B4C963C /* DrawMode.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		59830A9B2F7379F5B52B7F70 /* iSolitaire */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8DF35A6A38F61CCDC91C3B76 /* Build configuration list for PBXNativeTarget "iSolitaire" */;
+			buildPhases = (
+				32115FF9E034BB158CFA669B /* Sources */,
+				0A881A70744CA4901AB16972 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iSolitaire;
+			packageProductDependencies = (
+			);
+			productName = iSolitaire;
+			productReference = 2025B8EB61381C66DFDB2319 /* iSolitaire.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F01FC4B4C82CE8BEB0ED1BC9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 8C300AD640D07F3BE52EA36C /* Build configuration list for PBXProject "iSolitaire" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 0465707FC2DC2E25761AA85C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8A27F03275B8B8045B54A06F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				59830A9B2F7379F5B52B7F70 /* iSolitaire */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0A881A70744CA4901AB16972 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3875C1737604512BD2C03E9E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		32115FF9E034BB158CFA669B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				473F92399CD2769505FDEB02 /* AppLanguage.swift in Sources */,
+				D5BC813538C1B4EDCEBC7256 /* BoardView.swift in Sources */,
+				319735293FE2E7FE74686D78 /* Card.swift in Sources */,
+				72EF37A8F497929F3748018B /* CardDropDelegate.swift in Sources */,
+				3357D1FFB1C26BC91D23DAFF /* CardView.swift in Sources */,
+				2BB2952CC2B890233E1CCCF5 /* DrawMode.swift in Sources */,
+				179C6DDFB97B5EEA3AB4AA85 /* GameModel.swift in Sources */,
+				54D0087C8215CB18E28C1A92 /* GameState.swift in Sources */,
+				43AA9B2BD5230F7264957B69 /* L10n.swift in Sources */,
+				37701F2F15A6D34499F6C183 /* PileViews.swift in Sources */,
+				DDF9C9EFBC449B9AE7BAB149 /* SettingsView.swift in Sources */,
+				5F2E4DB8251CB6F6D190398A /* SplashView.swift in Sources */,
+				562BDA4451F140FA9547F201 /* StatsStore.swift in Sources */,
+				A6D87DFC2C023CF25AC01ECD /* StatsView.swift in Sources */,
+				FAE4D1E7754FED8B6E1CD787 /* Theme.swift in Sources */,
+				A782D081D995F81F1D0EA3B9 /* WinOverlay.swift in Sources */,
+				15BB53D67CC7BA57ED3E9BFA /* iSolitaireApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0BE01ECACAE8BC44A7C849A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = iSolitaire/Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iSolitaire;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3DF2A775D8952E1855B09181 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8D1106C2FB86BB798F2F9EA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B18E9CBE0CDDE33836A08661 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = iSolitaire/Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iSolitaire;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8C300AD640D07F3BE52EA36C /* Build configuration list for PBXProject "iSolitaire" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8D1106C2FB86BB798F2F9EA5 /* Debug */,
+				3DF2A775D8952E1855B09181 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8DF35A6A38F61CCDC91C3B76 /* Build configuration list for PBXNativeTarget "iSolitaire" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B18E9CBE0CDDE33836A08661 /* Debug */,
+				0BE01ECACAE8BC44A7C849A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F01FC4B4C82CE8BEB0ED1BC9 /* Project object */;
+}
