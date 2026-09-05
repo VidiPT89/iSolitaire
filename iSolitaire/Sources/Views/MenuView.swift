@@ -75,6 +75,7 @@ struct MenuView: View {
             }
             .onAppear {
                 hasResumableGame = GameStateStore.loadState().map { !$0.isWon } ?? false
+                standaloneSettings = GameStateStore.loadSettings() ?? GameSettings()
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView(gameSettings: $standaloneSettings).environmentObject(appSettings)
