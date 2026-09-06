@@ -25,7 +25,7 @@ final class StatsStore {
         UserDefaults.standard.set(data, forKey: defaultsKey)
     }
 
-    func recordWin(time: Int, moves: Int, score: Int) {
+    func recordWin(time: Int, score: Int) {
         var stats = load()
         stats.gamesPlayed += 1
         stats.gamesWon += 1

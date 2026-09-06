@@ -21,7 +21,7 @@ final class SoundPlayer {
 
     private func play(_ name: String) {
         guard let player = players[name] else { return }
-        if player.isPlaying { player.currentTime = 0 } else { player.play() }
-        if !player.isPlaying { player.play() }
+        player.currentTime = 0
+        player.play()
     }
 }

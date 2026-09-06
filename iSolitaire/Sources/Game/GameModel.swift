@@ -1,9 +1,6 @@
 import Foundation
 import Combine
 import SwiftUI
-#if canImport(UIKit)
-import UIKit
-#endif
 
 @MainActor
 final class GameModel: ObservableObject {
@@ -396,7 +393,7 @@ final class GameModel: ObservableObject {
         wonAnimationTrigger += 1
         impactFeedback.gameWon()
         soundPlayer.win()
-        statsStore.recordWin(time: state.elapsedSeconds, moves: state.moves, score: state.score)
+        statsStore.recordWin(time: state.elapsedSeconds, score: state.score)
         GameStateStore.clearState()
     }
 
