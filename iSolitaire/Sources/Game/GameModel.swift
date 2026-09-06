@@ -260,6 +260,16 @@ final class GameModel: ObservableObject {
 
     // MARK: - Hint
 
+    /// A King already alone at the top of its column has nothing to gain from moving to
+    /// another empty column — same card, same "alone in an empty-ish column" state, just
+    /// shuffled sideways. Excluding it stops the hint (and stuck-detection) from suggesting
+    /// a technically-legal move that changes nothing.
+    private func isMeaningfulTableauMove(_ card: Card, from sourceColumn: Int, onTableauTop top: Card?) -> Bool {
+        guard canPlace(card, onTableauTop: top) else { return false }
+        if top == nil, card.rank == .king, state.tableau[sourceColumn].count == 1 { return false }
+        return true
+    }
+
     func requestHint() {
         for column in state.tableau.indices {
             guard let top = state.tableau[column].last, top.isFaceUp else { continue }
@@ -275,7 +285,7 @@ final class GameModel: ObservableObject {
         for column in state.tableau.indices {
             guard let top = state.tableau[column].last, top.isFaceUp else { continue }
             for other in state.tableau.indices where other != column {
-                if canPlace(top, onTableauTop: state.tableau[other].last) {
+                if isMeaningfulTableauMove(top, from: column, onTableauTop: state.tableau[other].last) {
                     hintedCardID = top.id
                     return
                 }
@@ -321,7 +331,7 @@ final class GameModel: ObservableObject {
         for column in state.tableau.indices {
             guard let top = state.tableau[column].last, top.isFaceUp else { continue }
             for other in state.tableau.indices where other != column {
-                if canPlace(top, onTableauTop: state.tableau[other].last) { return true }
+                if isMeaningfulTableauMove(top, from: column, onTableauTop: state.tableau[other].last) { return true }
             }
         }
         if let top = state.waste.last {
